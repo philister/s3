@@ -5,7 +5,7 @@ module S3
     include Parser
     extend Forwardable
 
-    attr_accessor :content_type, :content_disposition, :content_encoding
+    attr_accessor :content_type, :content_disposition, :content_encoding, :x_amz_storage_class
     attr_reader :last_modified, :etag, :size, :bucket, :key, :acl
     attr_writer :content
 
@@ -146,6 +146,7 @@ module S3
       headers[:x_amz_copy_source_if_none_match] = options[:if_none_match] if options[:if_none_match]
       headers[:x_amz_copy_source_if_unmodified_since] = options[:if_modified_since] if options[:if_modified_since]
       headers[:x_amz_copy_source_if_modified_since] = options[:if_unmodified_since] if options[:if_unmodified_since]
+      headers[:x_amz_storage_class] = options[:x_amz_storage_class] if options[:x_amz_storage_class]
 
       response = bucket.send(:bucket_request, :put, :path => key, :headers => headers)
       object_attributes = parse_copy_object_result(response.body)
@@ -155,6 +156,7 @@ module S3
       object.content_type = response["content-type"]
       object.content_encoding = response["content-encoding"]
       object.content_disposition = response["content-disposition"]
+      object.x_amz_storage_class = response["x-amz-storage-class"]
       object
     end
 
@@ -190,6 +192,7 @@ module S3
       self.last_modified = options[:last_modified]
       self.etag = options[:etag]
       self.size = options[:size]
+      self.x_amz_storage_class = options[:x_amz_storage_class]
     end
 
     def object_request(method, options = {})
@@ -218,6 +221,7 @@ module S3
       headers[:content_type] = @content_type || "application/octet-stream"
       headers[:content_encoding] = @content_encoding if @content_encoding
       headers[:content_disposition] = @content_disposition if @content_disposition
+      headers[:x_amz_storage_class] = @x_amz_storage_class || 'STANDARD'
       headers
     end
 
@@ -226,6 +230,7 @@ module S3
       self.content_type = response["content-type"]
       self.content_disposition = response["content-disposition"]
       self.content_encoding = response["content-encoding"]
+      self.x_amz_storage_class = response["x-amz-storage-class"]
       self.last_modified = response["last-modified"]
       if response["content-range"]
         self.size = response["content-range"].sub(/[^\/]+\//, "").to_i

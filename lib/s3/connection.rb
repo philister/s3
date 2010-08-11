@@ -122,7 +122,8 @@ module S3
                           :x_amz_copy_source_if_match,
                           :x_amz_copy_source_if_none_match,
                           :x_amz_copy_source_if_unmodified_since,
-                          :x_amz_copy_source_if_modified_since]
+                          :x_amz_copy_source_if_modified_since,
+                          :x_amz_storage_class]
 
       parsed_headers = {}
       if headers

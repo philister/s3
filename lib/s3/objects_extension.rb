@@ -1,8 +1,8 @@
 module S3
   module ObjectsExtension
     # Builds the object in the bucket with given key
-    def build(key)
-      Object.send(:new, proxy_owner, :key => key)
+    def build(key,rrs=false)
+      Object.send(:new, proxy_owner, {:key => key, :x_amz_storage_class=>rrs ? 'REDUCED_REDUNDANCY':'STANDARD'})
     end
 
     # Finds first object with given name or raises the exception if
