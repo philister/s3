@@ -2,6 +2,7 @@
 
 S3 library provides access to {Amazon's Simple Storage Service}[http://aws.amazon.com/s3/].
 It supports both: European and US buckets through {REST API}[http://docs.amazonwebservices.com/AmazonS3/latest/RESTAPI.html].
+Supports RRS (not finished).
 
 * homepage[http://jah.pl/projects/s3.html]
 * gemcutter[http://gemcutter.org/gems/s3]
